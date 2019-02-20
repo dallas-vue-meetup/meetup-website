@@ -1,0 +1,17 @@
+{
+  "name": "dallas-vue-meetup-website",
+  "version": "1.0.0",
+  "description": "A place to store all the quick info for the Dallas Vue Meetup",
+  "main": "index.js",
+  "repository": "https://github.com/dallas-vue-meetup/dallas-vue-meetup.github.io",
+  "author": "Tim Waite <tim@dialexa.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "vuepress dev",
+    "build": "vuepress build"
+  },
+  "devDependencies": {
+    "vuepress": "^0.14.9"
+  }
+}
