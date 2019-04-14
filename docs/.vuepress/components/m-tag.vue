@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'v-tag',
+  name: 'MTag',
 }
 </script>
 

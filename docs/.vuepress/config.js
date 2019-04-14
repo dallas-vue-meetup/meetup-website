@@ -9,7 +9,8 @@ module.exports = {
   },
   plugins: {
     "@vuepress/blog": {
-      postsDir: "meetups"
+      postsDir: "meetups",
+      permalink: "meetup/:slug"
     }
   }
 };

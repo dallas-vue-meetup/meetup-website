@@ -4,6 +4,7 @@
 set -e
 
 # build
+node build-meetup-pages.js
 npm run build
 
 # navigate into the build output directory
