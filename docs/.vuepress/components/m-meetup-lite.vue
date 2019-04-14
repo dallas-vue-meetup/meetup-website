@@ -1,12 +1,12 @@
 <template>
   <div class="card">
     <h3>{{title}}</h3>
-    <a :href="`https://www.meetup.com/Dallas-Vue-Meetup/events/${id}`">Meetup Page</a>
     <ul>
       <li v-for="talk in talks" :key="talk.title">
-        {{talk.title}} - {{talk.speaker}}
+        <strong>{{talk.name}}</strong> - {{talk.author}}
       </li>
     </ul>
+    <a :href="`../meetups/meetup-${order}`">View Details</a>
   </div>
 </template>
 
@@ -17,7 +17,8 @@ const MPastMeetup = {
     talks: Array, // Array of objects with the title and speaker
     image: String,
     id: String,
-    date: Date,
+    date: String,
+    order: Number,
   }
 }
 

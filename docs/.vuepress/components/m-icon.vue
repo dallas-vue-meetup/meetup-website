@@ -23,7 +23,7 @@ export default {
 <style scoped lang="stylus">
 .icon {
   position: relative;
-  padding: 0 0.75rem;
+  padding: 0 0.9rem;
 }
 
 svg {

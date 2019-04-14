@@ -1,19 +1,21 @@
 const fs = require("fs-extra");
 const axios = require("axios");
 const { addDays, format } = require("date-fns");
+const YAML = require("json-to-pretty-yaml");
 
 // TODO: tw - load from json file
 const meetups = [
   {
     id: "259967574",
-    tags: ["purescript", "JSX", "css-variables"],
+    tags: ["PureScript", "JSX", "CSS Variables", "Render Functions"],
     video: "https://youtu.be/tJxKmqEmz08",
     talks: [
       {
         author: "Sebastian Klingler",
         name: "Purescript and Vue",
         repo: "https://github.com/sliptype/vue-pure",
-        video: "https://youtu.be/tJxKmqEmz08"
+        video: "https://youtu.be/tJxKmqEmz08",
+        blog: "https://sliptype.github.io/functional-front-end/"
       },
       {
         author: "Travis Almand",
@@ -28,19 +30,71 @@ const meetups = [
   },
   {
     id: "257968050",
-    talks: []
+    tags: ["Nuxt", "Transitions", "Animations", "SSR"],
+    video: "https://youtu.be/5mWssPKY-VQ?t=2649",
+    talks: [
+      {
+        author: "Doug Lasater",
+        name: "Intro to Nuxt",
+        video: "https://youtu.be/5mWssPKY-VQ?t=2826",
+        repo: "https://github.com/dallas-vue-meetup/meetup-4-nuxt",
+        slides:
+          "https://www.dropbox.com/s/ntedjolj9anfj07/Feb-2019--intro-to-nuxt.pdf?dl=0"
+      },
+      {
+        author: "Travis Almand",
+        name: "Transitions in Vue",
+        video: "https://youtu.be/5mWssPKY-VQ?t=5538",
+        repo:
+          "https://github.com/dallas-vue-meetup/meetup-4-demo-transitions<Paste>"
+      }
+    ]
   },
   {
     id: "256725358",
-    talks: []
+    tags: ["Slots", "Workshop"],
+    talks: [
+      {
+        author: "Tim Waite",
+        name: "Slots Workshop",
+        repo: "https://github.com/dallas-vue-meetup/meetup-3-slots-workshop"
+      }
+    ]
   },
   {
     id: "254152490",
-    talks: []
+    tags: ["Electron", "Vuex", "State Management"],
+    talks: [
+      {
+        author: "Joseph Campuzano",
+        name: "A High Level Intro to Vuex",
+        video: "https://www.youtube.com/watch?v=OHlfrVeRIdI"
+      },
+      {
+        author: "Cameron Adams",
+        name: "Building Electron Apps using Vue",
+        video: "https://www.youtube.com/watch?v=OmAOORk5fGI"
+      }
+    ]
   },
   {
     id: "252160586",
-    talks: []
+    tags: ["Directives", "Upgrading"],
+    talks: [
+      {
+        author: "Joseph Campuzano",
+        name: "Adding Vue to an Existing Project",
+        video: "https://www.youtube.com/watch?v=T3nlYgnxRNo",
+        repo: "https://github.com/dallas-vue-meetup/meetup-1-migrating-to-vue"
+      },
+      {
+        author: "Tim Waite",
+        name: "Directives Deep Dive",
+        video: "https://www.youtube.com/watch?v=zzN6s8i5zFI",
+        repo:
+          "https://github.com/dallas-vue-meetup/meetup-1-directives-deep-dive"
+      }
+    ]
   }
 ];
 
@@ -80,7 +134,7 @@ function writeFiles(meetups) {
     .forEach((meetup, index) => {
       fs.writeFile(
         `docs/meetups/meetup-${index + 1}.md`,
-        createMarkdown(meetup),
+        createMarkdown(meetup, index),
         "utf-8"
       );
     });
@@ -91,60 +145,21 @@ function adjustMeetupDate(string) {
   return new Date(`${month}-${day}-${year}`);
 }
 
-function createMarkdown(meetup) {
-  return `---
-title: "${meetup.name}"
-date: ${format(meetup.date, "MM/DD/YY")}
-tags:
-${meetup.tags ? meetup.tags.map(tag => `  - ${tag}\n`).join("") : ""}
-upcoming: ${meetup.status === "upcoming"}
----
+function createMarkdown(meetup, index) {
+  const frontmatter = {
+    name: meetup.name,
+    talks: meetup.talks,
+    order: index + 1,
+    video: meetup.video,
+    id: meetup.id,
+    meetupUrl: meetup.link,
+    date: format(meetup.date, "MM/DD/YY"),
+    prettyDate: format(meetup.date, "MMM Do, YYYY"),
+    tags: meetup.tags,
+    upcoming: meetup.status === 'upcoming',
+  };
 
-# ${meetup.name}
-#### ${format(meetup.date, "MMM Do, YYYY")}
-<div style="margin: 1rem 0;">
-${meetup.tags ? meetup.tags.map(tag => `<m-tag>${tag}</m-tag>\n`).join("") : ""}
-</div>
-
-<div style="margin: 0.5rem 0"><m-icon icon="meetup" /> <a href="https://www.meetup.com/Dallas-Vue-Meetup/events/${
-    meetup.id
-  }">View on Meetup</a></div>
-
-${
-  meetup.video
-    ? `<div style="margin: 0.5rem 0"><m-icon icon="youtube" /> <a href="${
-        meetup.video
-      }">Watch on Youtube</a></div>`
-    : ""
-}
-
-<br />
-
-### Talks
-
-${meetup.talks
-  .map(talk => {
-    return `- <strong>${talk.name}</strong> - ${talk.author} 
-  ${
-    talk.repo
-      ? `  - <m-icon icon="github" /> <a href="${
-          talk.repo
-        }" target="_">View on Github</a>`
-      : ""
-  }
-  ${
-    talk.video
-      ? `  - <m-icon icon="youtube" /> <a href="${
-          talk.video
-        }" target="_">Watch on YouTube</a>`
-      : ""
-  }
-`;
-  })
-  .join("")}
-
-### Description
-
-${meetup.description}
-  `;
+  return `---\n${YAML.stringify(frontmatter)}---\n <m-meetup-details />${
+    meetup.description
+  }`;
 }
